@@ -1,0 +1,18 @@
+# Creates a "Service" resource in MetalLB to expose Headlamp to the outside world. This is the configuration that "meets up with" the nginx config file for proxying - note the TCP ports.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: headlamp-external-svc
+  namespace: kube-system # Change this if your Headlamp is deployed in a different namespace
+  labels:
+    app.kubernetes.io/name: headlamp
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: 4466  # Headlamp default internal port (or 80 if SSL is disabled internally)
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: headlamp # Ensures traffic routes to the Headlamp pods
